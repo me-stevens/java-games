@@ -15,7 +15,7 @@ public class Trivial extends Frame implements ActionListener {
 	private int lives;
 	private int question;
 	private boolean correct;
-	private Button S, N, x, I, a, b, c;
+	private Button S, I, x, a, b, c, N;
 	private Panel p1;
 	private File ranking;
 	ArrayList<Integer> available;
@@ -23,7 +23,7 @@ public class Trivial extends Frame implements ActionListener {
 	
 	/* ---------------------------------------------
 	 *		CONSTRUCTOR
-	 * ---------------------------------------------*/
+	 * --------------------------------------------- */
 	public Trivial() {
 
 		super("TRIVIAL PURSUIT");
@@ -36,13 +36,15 @@ public class Trivial extends Frame implements ActionListener {
 		points    = -1;
 		lives     =  3;
 
+		// ARRAY FOR THE 12 QUESTIONS --------------
+		// (11 un-answered questions) --------
 		available = new ArrayList<Integer>();
 		for (int i=0; i<12; i++)
 			available.add(i);
 
 		setLayout( new BorderLayout() );
 	
-		// RIGHT PANEL --------------------------
+		// RIGHT PANEL -----------------------------
 		S = new Button("Start");
 		I = new Button("Instructions");
 		x = new Button("Exit >");
@@ -53,7 +55,7 @@ public class Trivial extends Frame implements ActionListener {
 		p1.add(x);
 		add("East", p1);
 
-		// ANSWER BUTTONS -----------------------
+		// ANSWER BUTTONS --------------------------
 		a = new Button("A");
 		b = new Button("B");
 		c = new Button("C");
@@ -69,7 +71,8 @@ public class Trivial extends Frame implements ActionListener {
 		c.addActionListener(this);
 		N.addActionListener(this);
 
-		addWindowListener( new CloseWindow() );// To close window with x
+		// To close window with x ------------------
+		addWindowListener( new CloseWindow() );
 
 		S.addActionListener(this);
 		I.addActionListener(this);
@@ -191,28 +194,16 @@ public class Trivial extends Frame implements ActionListener {
 //		return "A";
 //	}
 
-//	public void Start() {
-
-//		setLayout(null);
-//		add(a);
-//		add(b);
-//		add(c);
-//		add(N);
-
-//		points = 0;
-//		lives  = 3;
-
-//		reset();
-//	}
 
 	/* -------------------------------------------------------------------------
-	 * Since Trivial is not abstract it has to override abstract method 
-	 * actionPerformed(ActionEvent) in ActionListener
+	 *    GAME FUNCTIONALITY
+	 *    Since Trivial is not abstract it has to override abstract method 
+	 *    actionPerformed(ActionEvent) in ActionListener
 	 * -------------------------------------------------------------------------*/
 	public void actionPerformed( ActionEvent event ) {
 
-//		if ( event.getActionCommand().equals("Start") )
-//			Start(); // Restart the values of life, points, etc.
+		if ( event.getActionCommand().equals("Start") )
+			Start(); // Restart the values of life, points, etc.
 
 //		else if ( event.getActionCommand().equals("Instructions") ) {
 //			Instructions instructions = new Instructions(this, "Instructions", true);
@@ -268,19 +259,45 @@ public class Trivial extends Frame implements ActionListener {
 //			reset();
 	}
 
-//	public void reset() {
 
-//		randomQuestion();
+	/* ---------------------------------------------
+	 *		START GAME
+	 * --------------------------------------------- */
+	public void Start() {
 
-//		correct = false;
+		setLayout(null);
+		add(a);
+		add(b);
+		add(c);
+		add(N);
 
-//		N.setEnabled(false);
-//		a.setEnabled(true);
-//		b.setEnabled(true);
-//		c.setEnabled(true);
-//		check();
-//	}
+		points = 0;
+		lives  = 3;
 
+		reset();
+	}
+
+
+	/* ---------------------------------------------
+	 *		RESET LAYOUT
+	 * --------------------------------------------- */
+	public void reset() {
+
+		randomQuestion();
+
+		correct = false;
+
+		a.setEnabled(true);
+		b.setEnabled(true);
+		c.setEnabled(true);
+		N.setEnabled(false);
+		check();
+	}
+
+
+	/* ---------------------------------------------
+	 *		RESET LAYOUT REVERSED
+	 * --------------------------------------------- */
 //	public void antireset() {
 
 //		N.setEnabled(true);
@@ -290,23 +307,31 @@ public class Trivial extends Frame implements ActionListener {
 //		check();
 //	}
 
-//	// Return a random number between [0, not-answered-q's)
-//	public void randomQuestion() {
 
-//		Random q = new Random();
+	/* ---------------------------------------------
+	 *		LAUNCH QUESTION
+	 *      Returns a random number 
+	 *      between [0, not-answered-q's)
+	 * --------------------------------------------- */
+	public void randomQuestion() {
 
-//		if (available.size() > 0) {
+		Random questionNumber = new Random();
 
-//			int pos  = q.nextInt(available.size());
-//			question = available.get(pos);
-//			available.remove(pos);
-//		}
-//	}
-//	
+		if (available.size() > 0) {
 
-//	public void check() {
+			int pos  = questionNumber.nextInt(available.size());
+			question = available.get(pos);
+			available.remove(pos);
+		}
+	}
+	
 
-//		if (points == -1)
+	/* ---------------------------------------------
+	 *		CHECK
+	 * --------------------------------------------- */
+	public void check() {
+
+		if (points == -1) {}
 //			g.drawString("Trivial Pursuit.", 30, 77);
 
 //		else {
@@ -341,36 +366,40 @@ public class Trivial extends Frame implements ActionListener {
 //			Name name = new Name(this, "Name", true, ranking);
 //			name.setVisible(true);
 //		}
-//	}
+	}
 
+	/* ------------------------------------------------------------
+	 *  CREATE EMPTY RANKING FILE
+	 * ------------------------------------------------------------ */
 	public void createRanking() {
 
-//		if ( !ranking.exists() ) {// If file doesn't exist, create
+		// If file doesn't exist, create it
+		if ( !ranking.exists() ) {
 
-//			PrintWriter pw = null;
+			PrintWriter pw = null;
 
-//			try {
-//				pw = new PrintWriter(new FileOutputStream(ranking));
-//		
-//				for (int i = 0; i<10; i++)
-//					pw.println();
-//		
-//				for (int i = 10; i<20; i++)
-//					pw.println(" -- ");
-//		
-//			} catch(IOException e) {
-//				e.printStackTrace();
+			try {
+				pw = new PrintWriter(new FileOutputStream(ranking));
+		
+				for (int i = 0;  i<10; i++)
+					pw.println();
+		
+				for (int i = 10; i<20; i++)
+					pw.println(" -- ");
+		
+			} catch(IOException e) {
+				e.printStackTrace();
 
-//			} finally {
-//				if (pw != null) {
-//					try {
-//						pw.close();
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}
+			} finally {
+				if (pw != null) {
+					try {
+						pw.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 
