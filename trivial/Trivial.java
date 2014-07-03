@@ -205,10 +205,10 @@ public class Trivial extends Frame implements ActionListener {
 		if ( event.getActionCommand().equals("Start") )
 			Start(); // Restart the values of life, points, etc.
 
-//		else if ( event.getActionCommand().equals("Instructions") ) {
-//			Instructions instructions = new Instructions(this, "Instructions", true);
-//			instructions.setVisible(true);
-//		}
+		else if ( event.getActionCommand().equals("Instructions") ) {
+			Instructions instructions = new Instructions(this, "Instructions", true);
+			instructions.setVisible(true);
+		}
 //		
 //		else if ( event.getActionCommand().equals("Exit >") )
 //			System.exit(0);

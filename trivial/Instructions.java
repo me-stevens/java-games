@@ -23,7 +23,7 @@ public class Instructions extends Dialog implements ActionListener {
 		// Text
 		p1 = new Panel(new GridLayout(3, 1) );
 		p1.add( new Label("TRIVIAL PURSUIT") );
-		p1.add( new Label("Ask the questions correctly and win 1000 points for each correct one.") );
+		p1.add( new Label("Answer the questions correctly and win 1000 points for each correct one.") );
 		add("Center", p1);
 
 		// OK button
