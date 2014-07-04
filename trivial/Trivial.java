@@ -209,9 +209,9 @@ public class Trivial extends Frame implements ActionListener {
 			Instructions instructions = new Instructions(this, "Instructions", true);
 			instructions.setVisible(true);
 		}
-//		
-//		else if ( event.getActionCommand().equals("Exit >") )
-//			System.exit(0);
+		
+		else if ( event.getActionCommand().equals("Exit >") )
+			System.exit(0);
 
 //		else if ( event.getActionCommand().equals("A") ) {
 
