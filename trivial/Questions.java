@@ -21,6 +21,7 @@ public class Questions {
 	 * --------------------------------------------- */
 	public String memory ( boolean questionr, int question, int r ) {
 
+		// QUESTIONS ----------------------------------
 		String[] questions  =  new String[12];
 
 		questions[0]  = "What's the highest lake of the world?";
@@ -36,6 +37,7 @@ public class Questions {
 		questions[10] = "When did Salvador Dali die?";
 		questions[11] = "Who's the composer of 'Parsifal'?";
 	
+		// ANSWERS ----------------------------------
 		String[][] answers = new String[12][3];
 
 		answers[0][0] = "Titicaca.";

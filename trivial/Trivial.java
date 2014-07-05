@@ -18,8 +18,9 @@ public class Trivial extends Frame implements ActionListener {
 	private Button S, I, x, a, b, c, N;
 	private Panel p1;
 	private File ranking;
-	ArrayList<Integer> available;
-
+	private ArrayList<Integer> available;
+	private Questions questions;
+	private Graphics g;
 	
 	/* ---------------------------------------------
 	 *		CONSTRUCTOR
@@ -33,8 +34,8 @@ public class Trivial extends Frame implements ActionListener {
 		ranking         = new File (path, filename);
 		createRanking();
 	
-		points    = -1;
-		lives     =  3;
+		points = -1;
+		lives  =  3;
 
 		// ARRAY FOR THE 12 QUESTIONS --------------
 		// (11 un-answered questions) --------
@@ -55,6 +56,10 @@ public class Trivial extends Frame implements ActionListener {
 		p1.add(x);
 		add("East", p1);
 
+		S.addActionListener(this);
+		I.addActionListener(this);
+		x.addActionListener(this);
+
 		// ANSWER BUTTONS --------------------------
 		a = new Button("A");
 		b = new Button("B");
@@ -74,10 +79,8 @@ public class Trivial extends Frame implements ActionListener {
 		// To close window with x ------------------
 		addWindowListener( new CloseWindow() );
 
-		S.addActionListener(this);
-		I.addActionListener(this);
-		x.addActionListener(this);
-	
+		questions = new Questions();
+
 		setSize(650, 300);
 	}
 
@@ -89,8 +92,29 @@ public class Trivial extends Frame implements ActionListener {
 	 * -------------------------------------------------------------------------*/
 	public void actionPerformed( ActionEvent event ) {
 
-		if ( event.getActionCommand().equals("Start") )
-			Start(); // Restart the values of life, points, etc.
+		if ( event.getActionCommand().equals("Start") ) {
+
+			setLayout(null);
+			add(a);
+			add(b);
+			add(c);
+			add(N);
+
+			points  = 0;
+			lives   = 3;
+			correct = false;
+
+			// LAUNCH QUESTION ---------------------------
+			// Returns a random number between [0, not-answered-q's)
+			Random questionNumber = new Random();
+			if (available.size() > 0) {
+				int pos  = questionNumber.nextInt(available.size());
+				question = available.get(pos);
+				available.remove(pos);
+			}
+
+			reset(true);
+		}
 
 		else if ( event.getActionCommand().equals("Instructions") ) {
 			Instructions instructions = new Instructions(this, "Instructions", true);
@@ -100,132 +124,67 @@ public class Trivial extends Frame implements ActionListener {
 		else if ( event.getActionCommand().equals("Exit >") )
 			System.exit(0);
 
-//		else if ( event.getActionCommand().equals("A") ) {
+		else if (  event.getActionCommand().equals("A")
+                || event.getActionCommand().equals("B")
+                || event.getActionCommand().equals("C") ) {
 
-//			if ( solutions().equals("A")) {
-//				correct = true;
-//				points += 1000;
-//			}
-//			else {
-//				correct = false;
-//				lives--;
-//			}
+			if ( questions.solutions(question).equals( event.getActionCommand() ) ) {
 
-//			antireset();
-//		}
-//		
-//		else if ( event.getActionCommand().equals("B") ) {
+				correct = true;
+				points += 1000;
+			}
 
-//			if ( solutions().equals("B") ) {
-//				correct = true;
-//				points += 1000;
-//			}
-//			else {
-//				correct = false;
-//				lives--;
-//			}
+			else {
 
-//			antireset();
-//		}
-//		
-//		else if ( event.getActionCommand().equals("C") ) {
+				correct = false;
+				lives--;
+			}
 
-//			if (solutions().equals("C")) {
-//				correct = true;
-//				points += 1000;
-//			}
-//			else {
-//				correct = false;
-//				lives--;
-//			}
-
-//			antireset();
-//		}
+			reset(false);
+		}
 
 //		else if ( event.getActionCommand().equals("Next >") )
-//			reset();
+//			reset(true);
 	}
-
-
-	/* ---------------------------------------------
-	 *		START GAME
-	 * --------------------------------------------- */
-	public void Start() {
-
-		setLayout(null);
-		add(a);
-		add(b);
-		add(c);
-		add(N);
-
-		points = 0;
-		lives  = 3;
-
-		reset();
-	}
-
 
 	/* ---------------------------------------------
 	 *		RESET LAYOUT
 	 * --------------------------------------------- */
-	public void reset() {
+	public void reset(boolean reset) {
 
-		randomQuestion();
+		if (reset) {
+			a.setEnabled(true);
+			b.setEnabled(true);
+			c.setEnabled(true);
+			N.setEnabled(false);
+		}
 
-		correct = false;
+		else {
+			a.setEnabled(false);
+			b.setEnabled(false);
+			c.setEnabled(false);
+			N.setEnabled(true);
+		}
 
-		a.setEnabled(true);
-		b.setEnabled(true);
-		c.setEnabled(true);
-		N.setEnabled(false);
 		check();
 	}
 
-
-	/* ---------------------------------------------
-	 *		RESET LAYOUT REVERSED
-	 * --------------------------------------------- */
-//	public void antireset() {
-
-//		N.setEnabled(true);
-//		a.setEnabled(false);
-//		b.setEnabled(false);
-//		c.setEnabled(false);
-//		check();
-//	}
-
-
-	/* ---------------------------------------------
-	 *		LAUNCH QUESTION
-	 *      Returns a random number 
-	 *      between [0, not-answered-q's)
-	 * --------------------------------------------- */
-	public void randomQuestion() {
-
-		Random questionNumber = new Random();
-
-		if (available.size() > 0) {
-
-			int pos  = questionNumber.nextInt(available.size());
-			question = available.get(pos);
-			available.remove(pos);
-		}
-	}
-	
 
 	/* ---------------------------------------------
 	 *		CHECK
 	 * --------------------------------------------- */
 	public void check() {
 
-		if (points == -1) {}
-//			g.drawString("Trivial Pursuit.", 30, 77);
+		g = this.getGraphics();
 
-//		else {
-//			g.drawString(memory(true,  0), 30, 50);
-//			g.drawString(memory(false, 0), 45, 77);
-//			g.drawString(memory(false, 1), 45, 107);
-//			g.drawString(memory(false, 2), 45, 137);
+		if (points == -1)
+			g.drawString("Trivial Pursuit.", 30, 77);
+
+		else {
+			g.drawString(questions.memory(true,  question, 0), 30, 50);
+			g.drawString(questions.memory(false, question, 0), 45, 77);
+			g.drawString(questions.memory(false, question, 1), 45, 107);
+			g.drawString(questions.memory(false, question, 2), 45, 137);
 
 //			// If it is not the first question
 //			if (points != 0) {
@@ -243,7 +202,7 @@ public class Trivial extends Frame implements ActionListener {
 //				g.drawString("LIVES: 0", 70, 240);
 //				g.drawString("Trivial GAME OVER", 70, 260);
 //			}
-//		}
+		}
 
 //		if (lives <= 0) {
 //			lives = -1;
