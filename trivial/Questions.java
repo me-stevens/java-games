@@ -6,23 +6,18 @@ package trivial;
 
 public class Questions {
 
+	private String[] questions;
+	private String[][] answers;
+	private String[] solutions;
+
+
 	/* ---------------------------------------------
 	 *		CONSTRUCTOR
 	 * --------------------------------------------- */
 	public Questions() {
-	}
-
-
-	/* ---------------------------------------------
-	 *		QUESTIONS & ANSWERS
-	 *    (For performance, created in a method)
-	 *    questionr = true  --> return the question
-	 *    questionr = false --> return answer r
-	 * --------------------------------------------- */
-	public String memory ( boolean questionr, int question, int r ) {
 
 		// QUESTIONS ----------------------------------
-		String[] questions  =  new String[12];
+		questions     = new String[12];
 
 		questions[0]  = "What's the highest lake of the world?";
 		questions[1]  = "Who's the author of 'Crime and Punishment'?";
@@ -38,7 +33,7 @@ public class Questions {
 		questions[11] = "Who's the composer of 'Parsifal'?";
 	
 		// ANSWERS ----------------------------------
-		String[][] answers = new String[12][3];
+		answers       = new String[12][3];
 
 		answers[0][0] = "Titicaca.";
 		answers[0][1] = "Poopo.";
@@ -87,7 +82,32 @@ public class Questions {
 		answers[11][0] = "Richard Wagner.";
 		answers[11][1] = "Giuseppe Verdi.";
 		answers[11][2] = "Wolfgang Amadeus Mozart.";
-	
+
+		// SOLUTIONS ----------------------------------
+		solutions     = new String[12];
+
+		solutions[0]  = "A";
+		solutions[1]  = "A";
+		solutions[2]  = "C";
+		solutions[3]  = "C";
+		solutions[4]  = "B";
+		solutions[5]  = "B";
+		solutions[6]  = "B";
+		solutions[7]  = "A";
+		solutions[8]  = "C";
+		solutions[9]  = "A";
+		solutions[10] = "C";
+		solutions[11] = "A";
+	}
+
+
+	/* ---------------------------------------------
+	 *		QUESTIONS & ANSWERS
+	 *    questionr = true  --> return the question
+	 *    questionr = false --> return answer r
+	 * --------------------------------------------- */
+	public String memory ( boolean questionr, int question, int r ) {
+
 		try {
 			if (questionr)
 				return questions[question];
@@ -105,26 +125,19 @@ public class Questions {
 	 * --------------------------------------------- */
 	public String solutions(int question) {
 
-		String[] solutions = new String[12];
-
-		solutions[0]  = "A";
-		solutions[1]  = "A";
-		solutions[2]  = "C";
-		solutions[3]  = "C";
-		solutions[4]  = "B";
-		solutions[5]  = "B";
-		solutions[6]  = "B";
-		solutions[7]  = "A";
-		solutions[8]  = "C";
-		solutions[9]  = "A";
-		solutions[10] = "C";
-		solutions[11] = "A";
-	
 		try {
 			return solutions[question];
 
 		} catch ( ArrayIndexOutOfBoundsException e ) {
 			return ("Reset");
 		}
+	}
+
+
+	/* ---------------------------------------------
+	 *		NUMBER OF QUESTIONS
+	 * --------------------------------------------- */
+	public int totalQuestions() {
+		return questions.length;
 	}
 }
