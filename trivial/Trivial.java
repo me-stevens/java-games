@@ -37,10 +37,11 @@ public class Trivial extends Frame implements ActionListener {
 		points = -1;
 		lives  =  3;
 
-		// ARRAY FOR THE 12 QUESTIONS --------------
-		// (11 un-answered questions) --------
+		// ARRAY FOR THE X QUESTIONS --------------
+		// (X-1 un-answered questions) --------
+		questions = new Questions();
 		available = new ArrayList<Integer>();
-		for (int i=0; i<12; i++)
+		for (int i=0; i<questions.totalQuestions() - 1; i++)
 			available.add(i);
 
 		setLayout( new BorderLayout() );
@@ -79,8 +80,6 @@ public class Trivial extends Frame implements ActionListener {
 		// To close window with x ------------------
 		addWindowListener( new CloseWindow() );
 
-		questions = new Questions();
-
 		setSize(650, 300);
 	}
 
@@ -92,6 +91,7 @@ public class Trivial extends Frame implements ActionListener {
 	 * -------------------------------------------------------------------------*/
 	public void actionPerformed( ActionEvent event ) {
 
+		// START ---------------------------------------------------------------
 		if ( event.getActionCommand().equals("Start") ) {
 
 			setLayout(null);
@@ -101,29 +101,23 @@ public class Trivial extends Frame implements ActionListener {
 			add(N);
 
 			points  = 0;
-			lives   = 3;
+			lives   = 5;
 			correct = false;
 
-			// LAUNCH QUESTION ---------------------------
-			// Returns a random number between [0, not-answered-q's)
-			Random questionNumber = new Random();
-			if (available.size() > 0) {
-				int pos  = questionNumber.nextInt(available.size());
-				question = available.get(pos);
-				available.remove(pos);
-			}
-
-			reset(true);
+			askQuestion(true);
 		}
 
+		// INSTRUCTIONS --------------------------------------------------------
 		else if ( event.getActionCommand().equals("Instructions") ) {
 			Instructions instructions = new Instructions(this, "Instructions", true);
 			instructions.setVisible(true);
 		}
 		
+		// EXIT ----------------------------------------------------------------
 		else if ( event.getActionCommand().equals("Exit >") )
 			System.exit(0);
 
+		// ANSWER BUTTONS ------------------------------------------------------
 		else if (  event.getActionCommand().equals("A")
                 || event.getActionCommand().equals("B")
                 || event.getActionCommand().equals("C") ) {
@@ -140,23 +134,37 @@ public class Trivial extends Frame implements ActionListener {
 				lives--;
 			}
 
-			reset(false);
+			askQuestion(false);
 		}
 
-//		else if ( event.getActionCommand().equals("Next >") )
-//			reset(true);
+		// NEXT BUTTON --------------------------------------------------------
+		else if ( event.getActionCommand().equals("Next >") )
+			askQuestion(true);
 	}
 
-	/* ---------------------------------------------
-	 *		RESET LAYOUT
-	 * --------------------------------------------- */
-	public void reset(boolean reset) {
 
+	/* ---------------------------------------------
+	 *		ASK QUESTION
+	 * --------------------------------------------- */
+	public void askQuestion(boolean reset) {
+
+		g = this.getGraphics();
+
+		// RESET LAYOUT ----------------------------
 		if (reset) {
 			a.setEnabled(true);
 			b.setEnabled(true);
 			c.setEnabled(true);
 			N.setEnabled(false);
+
+			// LAUNCH QUESTION ---------------------------
+			// Returns a random number between [0, not-answered-q's)
+			Random questionNumber = new Random();
+			if (available.size() > 0) {
+				int pos  = questionNumber.nextInt(available.size());
+				question = available.get(pos);
+				available.remove(pos);
+			}
 		}
 
 		else {
@@ -166,16 +174,7 @@ public class Trivial extends Frame implements ActionListener {
 			N.setEnabled(true);
 		}
 
-		check();
-	}
-
-
-	/* ---------------------------------------------
-	 *		CHECK
-	 * --------------------------------------------- */
-	public void check() {
-
-		g = this.getGraphics();
+		// DRAW QUESTION ---------------------------
 
 		if (points == -1)
 			g.drawString("Trivial Pursuit.", 30, 77);
@@ -186,27 +185,32 @@ public class Trivial extends Frame implements ActionListener {
 			g.drawString(questions.memory(false, question, 1), 45, 107);
 			g.drawString(questions.memory(false, question, 2), 45, 137);
 
-//			// If it is not the first question
-//			if (points != 0) {
-//				if (correct)
-//					g.drawString("Right answer.", 60, 200);
-//				else
-//					g.drawString("Wrong answer.", 60, 200);
-//			}
+			// If not the first question
+			if (  points != 0 
+               || lives  != 5 ) {
 
-//			g.drawString("Points: " + points, 70, 220);
-//	
-//			if (lives > -1) // Avoid showing -1 in lives
-//				g.drawString("LIVES: " + lives, 70, 240);
-//			else {
-//				g.drawString("LIVES: 0", 70, 240);
-//				g.drawString("Trivial GAME OVER", 70, 260);
-//			}
+				if (correct)
+					g.drawString("Right answer.", 60, 200);
+				else
+					g.drawString("Wrong answer.", 60, 200);
+			}
+
+			g.drawString("Points: " + points, 70, 220);
+
+			// Avoid showing -1 in lives
+			if (lives > -1)
+				g.drawString("LIVES: " + lives,   70, 240);
+			else {
+				g.drawString("LIVES: 0",          70, 240);
+				g.drawString("Trivial GAME OVER", 70, 260);
+			}
 		}
 
 //		if (lives <= 0) {
 //			lives = -1;
-//			N.setEnabled(false); // Deactivate next button
+
+//			N.setEnabled(false); 
+//			
 //			g.drawString("Trivial GAME OVER", 70, 260);
 //			updateRanking();
 //			Name name = new Name(this, "Name", true, ranking);
