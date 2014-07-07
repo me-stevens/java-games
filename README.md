@@ -6,6 +6,8 @@ In reality, Java experiments. Never ever use them. Very improvable ;-)
 
 Uses the pre-Swing libraries (Sun's AWT, not SWT). They are going to die soon, so I might revisit this game in the future if I decide to start learning JavaFX, which is replacing Swing.
 
+The ranking is just a "top ten".
+
 ## Compiling and running
 
 ### MadMax
