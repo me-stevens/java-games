@@ -8,6 +8,12 @@ Uses the pre-Swing libraries (Sun's AWT, not SWT). They are going to die soon, s
 
 The ranking is just a "top ten".
 
+To do:
+
+- [ ] Fix drawString painting new things over the old ones. Use a grey background? Then I have to use labels.
+- [ ] Handle the case when the `Questions` functions return `"Reset"`.
+- [ ] Improve look and feel, paddings, font, text size, etc.
+
 ## Compiling and running
 
 ### MadMax
