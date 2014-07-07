@@ -41,8 +41,6 @@ public class Trivial extends Frame implements ActionListener {
 		// (X-1 un-answered questions) --------
 		questions = new Questions();
 		available = new ArrayList<Integer>();
-		for (int i=0; i<questions.totalQuestions() - 1; i++)
-			available.add(i);
 
 		setLayout( new BorderLayout() );
 	
@@ -99,10 +97,15 @@ public class Trivial extends Frame implements ActionListener {
 			add(b);
 			add(c);
 			add(N);
+			S.setEnabled(false);
 
 			points  = 0;
 			lives   = 5;
 			correct = false;
+
+			available.clear();
+			for (int i=0; i<questions.totalQuestions() - 1; i++)
+				available.add(i);
 
 			askQuestion(true);
 		}
@@ -165,6 +168,10 @@ public class Trivial extends Frame implements ActionListener {
 				question = available.get(pos);
 				available.remove(pos);
 			}
+			else {
+				g.drawString("No more questions in the deck", 200, 260);
+				gameOver();
+			}
 		}
 
 		else {
@@ -202,22 +209,35 @@ public class Trivial extends Frame implements ActionListener {
 				g.drawString("LIVES: " + lives,   70, 240);
 			else {
 				g.drawString("LIVES: 0",          70, 240);
-				g.drawString("Trivial GAME OVER", 70, 260);
+				gameOver();
 			}
 		}
 
-//		if (lives <= 0) {
-//			lives = -1;
+		if (lives <= 0) {
+			lives = -1;
 
-//			N.setEnabled(false); 
-//			
-//			g.drawString("Trivial GAME OVER", 70, 260);
-//			updateRanking();
-//			Name name = new Name(this, "Name", true, ranking);
-//			name.setVisible(true);
-//		}
+			gameOver();
+		}
 	}
 
+
+	/* ------------------------------------------------------------
+	 *  GAME OVER
+	 * ------------------------------------------------------------ */
+	public void gameOver() {
+
+		N.setEnabled(false); 
+		S.setEnabled(true);
+		g.drawString("Trivial GAME OVER", 70, 260);
+
+		Name name = new Name(this, "Name", true, ranking);
+		name.setVisible(true);
+		updateRanking( name.getName() );
+
+		name.showRanking( name.getName() );
+		name.setVisible(true);
+	}
+	
 	/* ------------------------------------------------------------
 	 *  CREATE EMPTY RANKING FILE
 	 * ------------------------------------------------------------ */
@@ -253,88 +273,85 @@ public class Trivial extends Frame implements ActionListener {
 	}
 
 
-//	public void updateRanking() {
+	/* ------------------------------------------------------------
+	 *  UPDATE RANKING FILE
+	 * ------------------------------------------------------------ */
+	public void updateRanking(String name) {
 
-//		BufferedReader br  = null;
-//		PrintWriter pw     = null;
-//		String[] pointsStr = new String[20];
-//	
-//		try {
-//			br = new BufferedReader(new FileReader(ranking));
-//	
-//			for (int i = 0; i<20; i++)
-//				pointsStr[i] = br.readLine();
+		BufferedReader br  = null;
+		PrintWriter pw     = null;
+		String[] pointsStr = new String[20];
 
-//		} catch(FileNotFoundException e) {
-//			createRanking();
-//			updateRanking();
+		// Reading the file --------------------------------
+		try {
+			br = new BufferedReader(new FileReader(ranking));
+	
+			for (int i = 0; i<20; i++)
+				pointsStr[i] = br.readLine();
 
-//		} catch(IOException e) {
-//			e.printStackTrace();
+		} catch( FileNotFoundException e ) {
+			createRanking();
+			updateRanking(name);
 
-//		} finally {
-//			if (br != null) {
-//				try {
-//					br.close();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	
-//		// String to Double conversion
-//		double[] pointsDbl = new double[10];
-//		for (int i = 0; i<10; i++)
-//			pointsDbl[i] = Double.parseDouble(pointsStr[i]);
-//	
-//		// Sort from highest to lowest
-//		double aux = 0;
-//		int cont   = 0;
-//		for (int i = 0; i<10; i++) {
-//			if ( points >= pointsDbl[i]) {
-//				aux          = pointsDbl[i];
-//				pointsDbl[i] = points;
-//				points       = aux;
-//				cont++;
-//			}
-//		}
-//	
-//		// Double to String conversion
-//		for(int i = 0; i<10; i++)
-//			pointsStr[i] = String.valueOf(pointsDbl[i]);
-//	
-//		// Sort the players' names
-//		int anticont = 10 - cont;
-//		String name  = " ";
-//		String auxn  = "";
-//		for (int i = 1; i <= 10; i++) {
-//			if (i > anticont) {
-//				auxn           = pointsStr[9+i];
-//				pointsStr[9+i] = name;
-//				name           = auxn;
-//			}
-//		}
-//	
-//		try {
-//			pw = new PrintWriter(new FileOutputStream(ranking));
-//			for(int i = 0; i<20; i++)
-//				pw.println(pointsStr[i]);
+		} catch( IOException e ) {
+			e.printStackTrace();
 
-//		} catch(FileNotFoundException e) {
-//			createRanking();
-//			updateRanking();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	
+		// String to Double conversion ---------------------
+		double[] pointsDbl = new double[10];
+		for (int i = 0; i<10; i++)
+			if ( !pointsStr[i].equals("") )
+				pointsDbl[i] = Double.parseDouble(pointsStr[i]);
 
-//		} catch(Exception e) {
-//			e.printStackTrace();
+		// Sort from highest to lowest ---------------------
+		double aux  =  0;
+		String auxn = "";
+		for (int i = 0; i<10; i++) {
+			if ( points >= pointsDbl[i]) {
+				aux          = pointsDbl[i];
+				pointsDbl[i] = points;
+				points       = aux;
 
-//		} finally {
-//			if (pw != null) {
-//				try {
-//					pw.close();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
+				auxn            = pointsStr[10+i];
+				pointsStr[10+i] = name;
+				name            = auxn;
+			}
+		}
+	
+		// Double to String conversion ---------------------
+		for(int i = 0; i<10; i++)
+			pointsStr[i] = String.valueOf(pointsDbl[i]);
+	
+		// Writing the file --------------------------------
+		try {
+			pw = new PrintWriter(new FileOutputStream(ranking));
+			for(int i = 0; i<20; i++)
+				pw.println(pointsStr[i]);
+
+		} catch(FileNotFoundException e) {
+			createRanking();
+			updateRanking(name);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			if (pw != null) {
+				try {
+					pw.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }
