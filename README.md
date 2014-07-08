@@ -14,11 +14,19 @@ To do:
 - [ ] Handle the case when the `Questions` functions return `"Reset"`.
 - [ ] Improve look and feel, paddings, font, text size, etc.
 
-## Compiling and running
-
 ### MadMax
 
-Open the project in NetBeans and click the Run button or press F6.
+As Trivial, this is a work in progress. It is also a console application.
+
+To do:
+
+- [ ] Finish tests
+- [ ] Refactor the Gang class
+- [ ] Probably refactor the MadMax class
+- [ ] Move all the console messages to the printer class?
+- [ ] Add more interactivity
+
+## Compiling and running
 
 ### trivial
 
@@ -35,6 +43,10 @@ $ java trivial.Launcher
 ```
 
 A simple window should pop out.
+
+### MadMax
+
+Open the project in NetBeans and click the Run button or press F6.
 
 ## Dedicated site
 
